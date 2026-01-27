@@ -11,41 +11,41 @@
     state: present
     update_cache: yes
 
-- name: Check if we need Go 1.20.7 (for stable/1.5.x versions)
+- name: Check if we need Go 1.25.3 (for stable/1.6.x versions)
   set_fact:
-    need_go_1_20_7: "{{ sliver_version == 'stable' or (sliver_version is match('1\\.5\\..*')) }}"
+    need_go_1_25_3: "{{ sliver_version == 'stable' or (sliver_version is match('1\\.6\\..*')) }}"
 
-- name: Remove existing Go installation (for stable/1.5.x versions)
+- name: Remove existing Go installation (for stable/1.6.x versions)
   apt:
     name: golang-go
     state: absent
-  when: need_go_1_20_7
+  when: need_go_1_25_3
 
-- name: Download Go 1.20.7 tarball (for stable/1.5.x versions)
+- name: Download Go 1.25.3 tarball (for stable/1.6.x versions)
   get_url:
-    url: https://go.dev/dl/go1.20.7.linux-amd64.tar.gz
-    dest: /tmp/go1.20.7.linux-amd64.tar.gz
+    url: https://go.dev/dl/go1.25.3.linux-amd64.tar.gz
+    dest: /tmp/go1.25.3.linux-amd64.tar.gz
     mode: '0644'
-  when: need_go_1_20_7
+  when: need_go_1_25_3
 
-- name: Extract Go 1.20.7 to /usr/local (for stable/1.5.x versions)
+- name: Extract Go 1.25.3 to /usr/local (for stable/1.6.x versions)
   unarchive:
-    src: /tmp/go1.20.7.linux-amd64.tar.gz
+    src: /tmp/go1.25.3.linux-amd64.tar.gz
     dest: /usr/local
     remote_src: yes
     creates: /usr/local/go/bin/go
-  when: need_go_1_20_7
+  when: need_go_1_25_3
 
-- name: Create symlink for Go binary in /usr/local/bin (for stable/1.5.x versions)
+- name: Create symlink for Go binary in /usr/local/bin (for stable/1.6.x versions)
   file:
     src: /usr/local/go/bin/go
     dest: /usr/local/bin/go
     state: link
     force: yes
-  when: need_go_1_20_7
+  when: need_go_1_25_3
 
 - name: Install Go from apt (for latest versions)
   apt:
     name: golang
     state: present
-  when: not need_go_1_20_7 
+  when: not need_go_1_25_3 
