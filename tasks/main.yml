@@ -132,7 +132,15 @@
         (lookup('fileglob', role_path + '/files/*.yml', errors='ignore') | length > 0) or
         (lookup('fileglob', role_path + '/files/*.json', errors='ignore') | length > 0)
 
+- name: Configure operator configs
+  ansible.builtin.include_tasks: configure_operators.yml
+  when: sliver_generate_operator_configs | bool
+
+- name: Install Sliver implant generator
+  include_tasks: install_implant_generator.yml
+  when: sliver_install_implant_generator | bool
+
 - name: Clean up build directory
   file:
     path: /tmp/sliver-src
-    state: absent
+    state: absent  
